@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@variant dark (&:where(.dark, .dark *));
+
 @layer base {
   *,
   *::before,
@@ -14,9 +16,19 @@
     min-height: 100vh;
     margin: 0;
     padding: 0;
-    background-color: #fcfcfd;
-    color: #09090b;
+    overflow-x: hidden;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    background-color: #fcfcfd;
+    color: #09090b;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  html.dark body {
+    background-color: #07090e;
+    color: #f4f4f5;
   }
 }

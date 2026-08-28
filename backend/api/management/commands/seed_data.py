@@ -63,7 +63,20 @@ class Command(BaseCommand):
                     {"topic_name": "Strap & Build Quality", "vader_compound": -0.65, "positive_pct": 18, "neutral_pct": 20, "negative_pct": 62, "sample_sentence": "The proprietary silicone strap clip cracked after just three months of daily gym use."},
                     {"topic_name": "Display Brightness", "vader_compound": 0.45, "positive_pct": 64, "neutral_pct": 22, "negative_pct": 14, "sample_sentence": "AMOLED panel remains legible even in bright outdoor sunlight."}
                 ]
-            }
+            },
+            {
+                "name": "Logitech MX Master 3S Wireless Mouse",
+                "category": "Computers",
+                "star_rating": 3.9,
+                "pris_score": 0.01,
+                "ai_summary": "Users highlight precise tracking and quiet clicking mechanisms, but feedback is largely divided and indifferent regarding weight distribution and thumb wheel resistance for daily office tasks.",
+                "aspects": [
+                    {"topic_name": "Thumb Scroll Wheel", "vader_compound": 0.02, "positive_pct": 18, "neutral_pct": 68, "negative_pct": 14, "sample_sentence": "The side thumb wheel operates as specified for horizontal navigation with standard resistance."},
+                    {"topic_name": "Ergonomic Weight & Form", "vader_compound": -0.01, "positive_pct": 20, "neutral_pct": 65, "negative_pct": 15, "sample_sentence": "The mouse chassis weighs around 141 grams which feels standard compared to previous revisions."},
+                    {"topic_name": "Quiet Click Switches", "vader_compound": 0.58, "positive_pct": 82, "neutral_pct": 12, "negative_pct": 6, "sample_sentence": "The dampening on the primary left and right click buttons significantly reduces acoustic noise."},
+                    {"topic_name": "Bluetooth Connection Latency", "vader_compound": -0.44, "positive_pct": 12, "neutral_pct": 28, "negative_pct": 60, "sample_sentence": "Occasional stutter and polling rate drops occur when connected via multi-device Bluetooth."},
+                ],
+            },
         ]
 
         for item in mock_data:

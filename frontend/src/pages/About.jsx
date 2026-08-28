@@ -11,47 +11,44 @@ export default function About() {
   return (
     <div className="w-full max-w-5xl mx-auto px-4 sm:px-8 py-10 space-y-8 text-left">
       <div className="space-y-1">
-        <span className="text-[11px] font-semibold tracking-wider uppercase px-2.5 py-0.5 rounded-md bg-zinc-100 text-zinc-600 border border-zinc-200">
+        <span className="text-[11px] font-semibold tracking-wider uppercase px-2.5 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800/80 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700/80">
           Attribution
         </span>
-        <h1 className="text-2xl font-bold tracking-tight text-zinc-950">About the Project</h1>
-        <p className="text-sm text-zinc-500">
-          Product Review Intelligence System (PRIS) — Big Data Analytics Minor Project[cite: 1].
+        <h1 className="text-2xl font-bold tracking-tight text-zinc-950 dark:text-zinc-50">About the Project</h1>
+        <p className="text-sm text-zinc-500 dark:text-zinc-400">
+          Product Review Intelligence System (PRIS) — Big Data Analytics Minor Project.
         </p>
       </div>
 
-      {/* Mentor Section */}
-      <div className="bg-white border border-zinc-200/90 rounded-2xl p-6 shadow-xs space-y-3">
-        <div className="flex items-center gap-2 text-zinc-500 text-xs font-bold uppercase tracking-wider">
+      <div className="bg-white dark:bg-[#0c1019]/90 border border-zinc-200/90 dark:border-white/10 rounded-2xl p-6 shadow-xs space-y-3">
+        <div className="flex items-center gap-2 text-zinc-500 dark:text-zinc-400 text-xs font-bold uppercase tracking-wider">
           <GraduationCap size={16} />
           <span>Project Mentor & Guide</span>
         </div>
         <div>
-          <h2 className="text-xl font-bold text-zinc-900">Dr. Archana Praveen Kumar</h2>
-          <p className="text-xs text-zinc-500 mt-0.5">
-            School of Computer Engineering, Manipal Institute of Technology, Manipal[cite: 1]
+          <h2 className="text-xl font-bold text-zinc-900 dark:text-zinc-50">Dr. Archana Praveen Kumar</h2>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            School of Computer Engineering, Manipal Institute of Technology, Manipal
           </p>
         </div>
       </div>
 
-      {/* Team Section */}
       <div className="space-y-3">
-        <div className="flex items-center gap-2 text-zinc-500 text-xs font-bold uppercase tracking-wider">
+        <div className="flex items-center gap-2 text-zinc-500 dark:text-zinc-400 text-xs font-bold uppercase tracking-wider">
           <Users size={16} />
           <span>Project Authors</span>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {team.map((member) => (
-            <div key={member.reg} className="bg-white border border-zinc-200/90 rounded-2xl p-5 shadow-xs space-y-1">
-              <h3 className="font-bold text-zinc-900 text-sm">{member.name}</h3>
-              <p className="text-xs font-mono text-zinc-500">Reg: {member.reg}</p>
+            <div key={member.reg} className="bg-white dark:bg-[#0c1019]/90 border border-zinc-200/90 dark:border-white/10 rounded-2xl p-5 shadow-xs space-y-1">
+              <h3 className="font-bold text-zinc-900 dark:text-zinc-100 text-sm">{member.name}</h3>
+              <p className="text-xs font-mono text-zinc-500 dark:text-zinc-400">Reg: {member.reg}</p>
             </div>
           ))}
         </div>
       </div>
 
-      {/* GitHub Section */}
-      <div className="bg-zinc-900 text-white rounded-2xl p-6 sm:p-7 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-zinc-800 shadow-xs">
+      <div className="bg-zinc-900 dark:bg-[#0e131f] text-white rounded-2xl p-6 sm:p-7 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-zinc-800 dark:border-white/10 shadow-xs">
         <div className="space-y-1">
           <h2 className="text-base font-bold">Source Code & Pipeline Scripts</h2>
           <p className="text-xs text-zinc-400">
