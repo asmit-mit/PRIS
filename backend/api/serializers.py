@@ -27,7 +27,6 @@ class ProductSerializer(serializers.ModelSerializer):
             'category',
             'star_rating',
             'pris_score',
-            'ai_summary',
             'aspects',
             'created_at',
         ]

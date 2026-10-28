@@ -2,18 +2,18 @@ from django.db import models
 
 class Product(models.Model):
     CATEGORY_CHOICES = [
+        ("Video_Games", "Video Games"),
         ('Electronics', 'Electronics'),
         ('Audio', 'Audio'),
         ('Computers', 'Computers'),
         ('Wearables', 'Wearables'),
-        ('Home Appliances', 'Home Appliances'),
     ]
 
     name = models.CharField(max_length=255)
-    category = models.CharField(max_length=100, choices=CATEGORY_CHOICES, default='Electronics')
+    category = models.CharField(max_length=100, choices=CATEGORY_CHOICES, default='Video_Games')
     star_rating = models.DecimalField(max_digits=3, decimal_places=2, help_text="Average Amazon star rating (1.00 - 5.00)")
     pris_score = models.DecimalField(max_digits=3, decimal_places=2, help_text="VADER mean compound score normalized (-1.00 to +1.00)")
-    ai_summary = models.TextField(help_text="Aggregated thematic summary derived from extracted review topics")
+    # ai_summary = models.TextField(help_text="Aggregated thematic summary derived from extracted review topics")
     created_at = models.DateField(auto_now_add=True)
 
     def __str__(self):
