@@ -12,7 +12,7 @@ export default function ProductCard({ product, onSelectAspect }) {
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-zinc-100 dark:border-zinc-800/80 pb-5">
         <div className="space-y-1.5">
           <span className="inline-block text-[11px] font-semibold tracking-wider uppercase px-2.5 py-0.5 rounded-md bg-zinc-100 dark:bg-zinc-800/80 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700/80">
-            {product.category}
+            {product.category? product.category.replace(/_/g, ' ') : ''}
           </span>
           <h2 className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 transition-colors">
             {product.name}
@@ -42,7 +42,7 @@ export default function ProductCard({ product, onSelectAspect }) {
         </div>
       </div>
 
-      {/* AI Thematic Summary */}
+      {/* AI Thematic Summary
       <div className="my-5 p-4 rounded-xl bg-zinc-50/75 dark:bg-zinc-900/40 border border-zinc-200/60 dark:border-white/5">
         <div className="flex items-center gap-1.5 text-xs font-bold text-zinc-900 dark:text-zinc-200 mb-1.5">
           <span>Synthesized Review Summary</span>
@@ -50,7 +50,7 @@ export default function ProductCard({ product, onSelectAspect }) {
         <p className="text-sm text-zinc-600 dark:text-zinc-400 leading-relaxed">
           {product.ai_summary}
         </p>
-      </div>
+      </div> */}
 
       {/* Topic Pillars Grid */}
       <div>

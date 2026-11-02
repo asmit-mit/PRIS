@@ -12,5 +12,5 @@ frontend/node_modules/
 frontend/dist/
 
 # Datasets & ML artifacts
-nlp_pipeline/data/
+models/env/
 *.pkl

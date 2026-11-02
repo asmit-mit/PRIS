@@ -3,9 +3,11 @@ import { Search, Filter, Loader2 } from 'lucide-react';
 import { getProducts } from '../services/api';
 import ProductCard from '../components/ProductCard';
 import TopicModal from '../components/TopicModal';
+import ScrollToTop from '../components/ScrollToTop';
 
 export default function Products() {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
@@ -17,12 +19,18 @@ export default function Products() {
     setLoading(true);
     try {
       const data = await getProducts({ search, category, minRating });
+      let list = [];
       if (Array.isArray(data)) {
-        setProducts(data);
+        list = data;
       } else if (data && Array.isArray(data.results)) {
-        setProducts(data.results);
-      } else {
-        setProducts([]);
+        list = data.results;
+      }
+      setProducts(list);
+
+      // Extract unique categories from the database without losing options when filtering
+      if (list.length > 0) {
+        const uniqueInBatch = Array.from(new Set(list.map((p) => p.category).filter(Boolean)));
+        setCategories((prev) => Array.from(new Set([...prev, ...uniqueInBatch])).sort());
       }
     } catch (err) {
       console.error('Failed to load products:', err);
@@ -69,10 +77,11 @@ export default function Products() {
               className="bg-transparent text-xs font-semibold text-zinc-700 dark:text-zinc-300 focus:outline-none cursor-pointer"
             >
               <option value="All" className="dark:bg-zinc-900">All Categories</option>
-              <option value="Audio" className="dark:bg-zinc-900">Audio</option>
-              <option value="Computers" className="dark:bg-zinc-900">Computers</option>
-              <option value="Electronics" className="dark:bg-zinc-900">Electronics</option>
-              <option value="Wearables" className="dark:bg-zinc-900">Wearables</option>
+              {categories.map((cat) => (
+                <option key={cat} value={cat} className="dark:bg-zinc-900">
+                  {cat.replace(/_/g, ' ')}
+                </option>
+              ))}
             </select>
           </div>
 
@@ -82,6 +91,7 @@ export default function Products() {
             className="bg-zinc-50/70 dark:bg-zinc-900/60 border border-zinc-200/80 dark:border-zinc-800 px-3 py-2 rounded-xl text-xs font-semibold text-zinc-700 dark:text-zinc-300 focus:outline-none cursor-pointer"
           >
             <option value="" className="dark:bg-zinc-900">Any Star Rating</option>
+            <option value="3.5" className="dark:bg-zinc-900">≥ 3.5 Stars</option>
             <option value="4.0" className="dark:bg-zinc-900">≥ 4.0 Stars</option>
             <option value="4.5" className="dark:bg-zinc-900">≥ 4.5 Stars</option>
           </select>
@@ -119,6 +129,7 @@ export default function Products() {
           onClose={() => setSelectedAspect(null)}
         />
       )}
+      <ScrollToTop />
     </div>
   );
 }

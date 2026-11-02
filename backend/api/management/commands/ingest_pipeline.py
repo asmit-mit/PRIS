@@ -95,17 +95,15 @@ class Command(BaseCommand):
                 if not cat_series.empty:
                     category = str(cat_series.iloc[0]).strip()
 
-            # Aggregate product-level scores
-            avg_rating = (
-                round(float(prod_filtered["rating"].mean()), 2)
-                if not prod_filtered.empty
-                else 0.0
-            )
-            avg_pris = (
-                round(float(prod_ts["total_sentiment"].mean()), 4)
-                if not prod_ts.empty
-                else 0.0
-            )
+            # Aggregate product-level star rating safely
+            raw_rating = prod_filtered["rating"].mean() if not prod_filtered.empty else 0.0
+            avg_rating = round(float(raw_rating), 2) if pd.notna(raw_rating) else 0.0
+
+            # Aggregate product-level PRIS score safely against NaN
+            raw_pris = prod_ts["total_sentiment"].mean() if not prod_ts.empty else 0.0
+            if pd.isna(raw_pris):
+                continue
+            avg_pris = round(float(raw_pris), 4) if pd.notna(raw_pris) else 0.0
 
             # Date parsing
             created_at = None

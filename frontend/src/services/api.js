@@ -10,9 +10,17 @@ const api = axios.create({
 
 export const getProducts = async (params = {}) => {
   const queryParams = {};
-  if (params.search) queryParams.search = params.search;
-  if (params.category && params.category !== 'All') queryParams.category = params.category;
-  if (params.minRating) queryParams.star_rating__gte = params.minRating;
+  
+  if (params.search && params.search.trim()) {
+    queryParams.search = params.search.trim();
+  }
+  if (params.category && params.category !== 'All') {
+    queryParams.category = params.category;
+  }
+  if (params.minRating) {
+    // Aligns with min_rating in backend ProductFilter
+    queryParams.min_rating = params.minRating;
+  }
 
   const response = await api.get('/products/', { params: queryParams });
   return response.data;
