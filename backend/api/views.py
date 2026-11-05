@@ -3,6 +3,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, generics
 from .models import Product
 from .serializers import ProductSerializer
+from rest_framework.pagination import LimitOffsetPagination
 
 
 class ProductFilter(django_filters.FilterSet):
@@ -39,6 +40,10 @@ class ProductListView(generics.ListAPIView):
     ]
 
     filterset_class = ProductFilter
+    
+    pagination_class = (
+        LimitOffsetPagination
+    )
 
     # Removed ai_summary; added relational aspect searches
     search_fields = [

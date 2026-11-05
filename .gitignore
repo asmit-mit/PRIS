@@ -14,3 +14,8 @@ frontend/dist/
 # Datasets & ML artifacts
 models/env/
 *.pkl
+
+# Documents
+Intelligent_Product_Review_Presentation.pptx
+Product_Review_Synopsis_Condensed(1).docx
+Product_Review_Synopsis.pdf
