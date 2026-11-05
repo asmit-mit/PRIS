@@ -13,6 +13,7 @@ frontend/dist/
 
 # Datasets & ML artifacts
 models/env/
+models/*.csv
 *.pkl
 
 # Documents
