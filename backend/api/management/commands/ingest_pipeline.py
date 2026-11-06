@@ -70,9 +70,15 @@ class Command(BaseCommand):
         )
         # print(options["limit"])
 
-        self.stdout.write("Flushing existing database records...")
-        AspectSentiment.objects.all().delete()
-        Product.objects.all().delete()
+        # Extract categories present in the incoming batch
+        incoming_categories = list(df_filtered['category'].dropna().unique())
+
+        self.stdout.write(
+            f"Flushing existing database records for categories: {', '.join(incoming_categories)}..."
+        )
+        # Delete only aspects and products matching the incoming category/categories
+        AspectSentiment.objects.filter(product__category__in=incoming_categories).delete()
+        Product.objects.filter(category__in=incoming_categories).delete()
 
         aspects_to_create = []
 

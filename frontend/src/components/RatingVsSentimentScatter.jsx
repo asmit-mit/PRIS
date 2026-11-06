@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   ScatterChart,
   Scatter,
@@ -10,8 +10,8 @@ import {
   ReferenceLine,
   Cell,
 } from 'recharts';
+import { Filter } from 'lucide-react';
 
-// Custom Tooltip displaying exact product metrics on hover
 function CustomTooltip({ active, payload }) {
   if (!active || !payload || !payload.length) return null;
 
@@ -32,13 +32,13 @@ function CustomTooltip({ active, payload }) {
         <div>
           <span className="text-zinc-400 block">Amazon Stars</span>
           <span className="font-semibold text-zinc-800 dark:text-zinc-200 text-sm">
-            {data.starRating.toFixed(2)}
+            ⭐ {data.starRating.toFixed(2)}
           </span>
         </div>
         <div>
           <span className="text-zinc-400 block">PRIS (1–5)</span>
           <span className="font-semibold text-zinc-800 dark:text-zinc-200 text-sm">
-            {data.normalizedPris.toFixed(2)}
+            🎯 {data.normalizedPris.toFixed(2)}
           </span>
         </div>
       </div>
@@ -67,12 +67,12 @@ function CustomTooltip({ active, payload }) {
 
       {isInflated && (
         <span className="inline-block mt-1 text-[10px] font-medium bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 px-2 py-0.5 rounded border border-rose-200 dark:border-rose-900/60">
-          Rating Inflation Detected
+          ⚠️ Rating Inflation Detected
         </span>
       )}
       {isUnderrated && (
         <span className="inline-block mt-1 text-[10px] font-medium bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 px-2 py-0.5 rounded border border-emerald-200 dark:border-emerald-900/60">
-          Underrated Sentiment
+          💎 Underrated Sentiment
         </span>
       )}
     </div>
@@ -80,14 +80,28 @@ function CustomTooltip({ active, payload }) {
 }
 
 export default function RatingVsSentimentScatter({ products = [] }) {
-  // Transform and normalize product records
+  const [selectedCategory, setSelectedCategory] = useState('All');
+
+  // Derive unique categories from ingested products
+  const categories = useMemo(() => {
+    const rawCategories = products
+      .map((p) => p.category)
+      .filter((cat) => Boolean(cat) && cat.trim() !== '');
+    return ['All', ...Array.from(new Set(rawCategories)).sort()];
+  }, [products]);
+
+  // Filter products by selected category and normalize scores
   const chartData = useMemo(() => {
     return products
-      .filter((p) => p.star_rating != null && p.pris_score != null)
+      .filter((p) => {
+        const matchesCategory =
+          selectedCategory === 'All' || p.category === selectedCategory;
+        const hasValidScores = p.star_rating != null && p.pris_score != null;
+        return matchesCategory && hasValidScores;
+      })
       .map((p) => {
         const starRating = parseFloat(p.star_rating);
         const rawPris = parseFloat(p.pris_score);
-        // Normalize [-1, 1] to [1, 5]
         const normalizedPris = Number((3 + 2 * rawPris).toFixed(2));
         const delta = Number((normalizedPris - starRating).toFixed(2));
 
@@ -101,44 +115,69 @@ export default function RatingVsSentimentScatter({ products = [] }) {
           delta,
         };
       });
-  }, [products]);
+  }, [products, selectedCategory]);
 
-  // Color points based on sentiment divergence
   const getPointColor = (delta) => {
-    if (delta < -0.4) return '#f43f5e'; // Rose: Stars >> Sentiment (Inflation)
-    if (delta > 0.4) return '#10b981';  // Emerald: Sentiment >> Stars (Hidden gem)
-    return '#6366f1';                   // Indigo: Sentiment aligns with rating
+    if (delta < -0.4) return '#f43f5e'; // Rose: Inflation
+    if (delta > 0.4) return '#10b981';  // Emerald: Underrated
+    return '#6366f1';                   // Indigo: Parity
   };
 
   return (
-    <div className="w-full bg-white dark:bg-[#0c1019]/90 border border-zinc-200/90 dark:border-white/10 rounded-2xl p-6 shadow-xs space-y-4">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-100 dark:border-zinc-800 pb-4">
+    <div className="w-full bg-white dark:bg-[#0c1019]/90 border border-zinc-200/90 dark:border-white/10 rounded-2xl p-6 shadow-xs space-y-5">
+      {/* Header with Title and Category Dropdown */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-100 dark:border-zinc-800 pb-4">
         <div>
-          <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
-            Star Rating vs. PRIS Sentiment Parity
-          </h2>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400">
-            Compares traditional star ratings against normalized compound NLP sentiment ($1.0$ to $5.0$).
+          <div className="flex items-center gap-2">
+            <h2 className="text-base font-bold text-zinc-900 dark:text-zinc-100">
+              Star Rating vs. PRIS Sentiment Parity
+            </h2>
+            <span className="text-[11px] font-mono text-zinc-400 dark:text-zinc-500 bg-zinc-100 dark:bg-zinc-800/80 px-2 py-0.5 rounded-md">
+              {chartData.length} {chartData.length === 1 ? 'item' : 'items'}
+            </span>
+          </div>
+          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+            Cross-examining Amazon star ratings against normalized compound sentiment (1.0 to 5.0).
           </p>
         </div>
 
-        {/* Legend */}
-        <div className="flex items-center gap-3 text-[11px] text-zinc-600 dark:text-zinc-400">
-          <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block" /> Inflated Stars
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block" /> Underrated
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 inline-block" /> Balanced
-          </span>
+        {/* Filter & Legend Controls */}
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Category Dropdown */}
+          <div className="flex items-center gap-1.5 bg-zinc-50 dark:bg-zinc-900/90 border border-zinc-200/80 dark:border-zinc-800 rounded-lg px-2.5 py-1">
+            <Filter size={13} className="text-zinc-400" />
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="bg-transparent text-xs font-medium text-zinc-700 dark:text-zinc-300 focus:outline-none cursor-pointer"
+            >
+              {categories.map((cat) => (
+                <option key={cat} value={cat} className="bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-200">
+                  {cat === 'All' ? 'All Categories' : cat.replace(/_/g, ' ')}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Color Legend */}
+          <div className="flex items-center gap-3 text-[11px] text-zinc-600 dark:text-zinc-400 pl-1 border-l border-zinc-200 dark:border-zinc-800">
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-rose-500 inline-block" /> Inflated
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" /> Underrated
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="w-2 h-2 rounded-full bg-indigo-500 inline-block" /> Parity
+            </span>
+          </div>
         </div>
       </div>
 
+      {/* 1:1 Aspect-Ratio Chart Container */}
       <div className="w-full h-[420px] pt-2">
         <ResponsiveContainer width="100%" height="100%">
-          <ScatterChart margin={{ top: 20, right: 30, bottom: 25, left: 10 }}>
+          <ScatterChart margin={{ top: 20, right: 25, bottom: 35, left: 25 }}>
             <CartesianGrid strokeDasharray="3 3" stroke="#71717a" opacity={0.2} />
 
             <XAxis
@@ -153,7 +192,7 @@ export default function RatingVsSentimentScatter({ products = [] }) {
               label={{
                 value: 'Amazon Star Rating (1.0 - 5.0)',
                 position: 'insideBottom',
-                offset: -12,
+                offset: -15,
                 fill: '#a1a1aa',
                 fontSize: 12,
               }}
@@ -171,7 +210,7 @@ export default function RatingVsSentimentScatter({ products = [] }) {
                 value: 'Normalized PRIS Sentiment (1.0 - 5.0)',
                 angle: -90,
                 position: 'insideLeft',
-                offset: 5,
+                offset: 0,
                 fill: '#a1a1aa',
                 fontSize: 12,
               }}
@@ -179,7 +218,6 @@ export default function RatingVsSentimentScatter({ products = [] }) {
 
             <Tooltip content={<CustomTooltip />} />
 
-            {/* Parity Line (y = x) where stars match sentiment */}
             <ReferenceLine
               segment={[
                 { x: 1, y: 1 },
@@ -209,6 +247,15 @@ export default function RatingVsSentimentScatter({ products = [] }) {
             </Scatter>
           </ScatterChart>
         </ResponsiveContainer>
+      </div>
+
+      {/* Explanatory Callout */}
+      <div className="text-[11px] text-zinc-500 dark:text-zinc-400 bg-zinc-50 dark:bg-zinc-900/60 p-3 rounded-lg border border-zinc-200/80 dark:border-zinc-800">
+        💡 <strong>Viewing Category:</strong> Showing{' '}
+        <span className="font-semibold text-zinc-800 dark:text-zinc-200">
+          {selectedCategory === 'All' ? 'all categories' : selectedCategory.replace(/_/g, ' ')}
+        </span>
+        . Points located below the parity diagonal line ($y = x$) represent products where customer written sentiment scores lower than the numerical star rating.
       </div>
     </div>
   );
